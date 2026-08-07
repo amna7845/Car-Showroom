@@ -1,0 +1,179 @@
+# APEX Autoworks — Car Showroom Website
+
+A fully responsive, single-file car showroom website built with vanilla **HTML, CSS, and JavaScript** — no frameworks, no build tools, no dependencies. Open `index.html` in any browser and it just works.
+
+![type](https://img.shields.io/badge/type-static%20website-informational)
+![stack](https://img.shields.io/badge/stack-HTML%2FCSS%2FJS-yellow)
+![deps](https://img.shields.io/badge/dependencies-none-brightgreen)
+
+---
+
+## 🚗 Live Preview
+
+Just double-click `index.html`, or drag it into a browser tab. No server or install required (though a local server is recommended for the best experience — see [Running the Project](#-running-the-project)).
+
+---
+
+## ✨ Features
+
+### Pages
+| Page | Description |
+|---|---|
+| **Home** | Hero section, gauge-style stats, auto-rotating featured car slider, category shortcuts, "why choose us" section |
+| **Cars** | Full inventory (24 cars) with search, filters, sorting, and a price-range slider |
+| **Car Details** | Photo gallery, full spec sheet, EMI calculator, inquiry & test-drive shortcuts |
+| **Categories** | Sedan / SUV / Hatchback / Sports / Electric — click through to filtered inventory |
+| **Favorites** | Cars saved via the heart icon, persisted in `localStorage` |
+| **Book a Test Drive** | Validated booking form (name, email, phone, date, car, notes) |
+| **About** | Brand story, stats strip, values |
+| **Contact** | Validated contact form + showroom info panel |
+| **Login / Register** | Demo auth system stored in `localStorage` (tabbed login/register, logout) |
+| **Footer** | Quick links, company links, social icons, showroom address & hours |
+
+### JavaScript functionality
+- Responsive hamburger menu (mobile nav drawer)
+- Dark / light mode toggle (persisted)
+- Live search by brand or model
+- Filter by brand, body type, and fuel type
+- Price-range slider filter
+- Sort by price, model year, or mileage
+- Add / remove favorites (persisted in `localStorage`)
+- Car image gallery with clickable thumbnails
+- Auto-rotating featured cars slider with manual prev/next + dot navigation
+- EMI calculator (price, down payment, interest rate, tenure → monthly EMI, total interest, total payable)
+- Test-drive booking form validation (name, email, phone, future date, car selection)
+- Contact form and inquiry popup form validation
+- Sticky navigation bar with scroll shadow
+- Smooth scrolling between sections/pages
+- Scroll-to-top button (appears after scrolling)
+- Car inquiry popup modal
+- Basic login / register / logout using `localStorage` (no backend)
+
+---
+
+## 🗂 Project Structure
+
+This project is intentionally shipped as **one self-contained file** for easy sharing and zero setup:
+
+```
+apex-autoworks/
+└── index.html      # HTML structure + embedded CSS (<style>) + embedded JS (<script>)
+```
+
+Internally, `index.html` is organized into clearly commented sections:
+
+```
+<head>            → meta tags, Google Fonts, embedded CSS with design tokens
+<body>
+ ├─ <header>       → sticky nav / dashboard cluster
+ ├─ #page-home     → hero, slider, categories, value props
+ ├─ #page-cars     → toolbar (search/filter/sort) + car grid
+ ├─ #page-details  → gallery + specs + EMI calculator
+ ├─ #page-categories
+ ├─ #page-favorites
+ ├─ #page-booking  → test drive form
+ ├─ #page-about
+ ├─ #page-contact
+ ├─ #page-login    → login/register/logout
+ ├─ <footer>
+ ├─ inquiry modal
+ └─ <script>       → data, state, render functions, event handlers
+```
+
+Pages are implemented as toggled `<section class="page">` blocks (single-page-app style) — navigation swaps visibility via JavaScript instead of separate HTML files, so the whole site loads instantly with one request.
+
+---
+
+## 🧠 How It Works
+
+### Car data
+All 24 cars live in a single JavaScript array (`CARS`) near the top of the `<script>` block:
+
+```js
+{id:1, brand:"Toyota", model:"Camry", type:"Sedan", fuel:"Petrol",
+ trans:"Automatic", year:2024, price:32500, mileage:15, seats:5,
+ color:"Pearl White", lock:101, desc:"..."}
+```
+
+Add, remove, or edit cars by editing this array — the grid, filters, slider, categories, and details page all render from it automatically.
+
+### Images
+Car photos are loaded live from **LoremFlickr** (`loremflickr.com`), keyed by body type (e.g. `sedan`, `suv`, `sportscar`, `electriccar`) plus a `lock` ID per car so each listing gets a stable, repeatable set of photos. This means:
+- No image files to host or upload.
+- Photos are real automotive photography, but **not the exact make/model pictured** (LoremFlickr matches by keyword, not by car).
+
+To use your own photos instead, replace the `carImg()` / `carImgLarge()` functions with paths to local images (e.g. `/images/cars/toyota-camry-1.jpg`).
+
+### Data persistence
+Everything is stored in the browser's `localStorage` — no backend or database:
+
+| Key | Stores |
+|---|---|
+| `apex_favorites` | Array of favorited car IDs |
+| `apex_theme` | `"dark"` or `"light"` |
+| `apex_users` | Registered demo accounts (username + password, plaintext — demo only) |
+| `apex_current_user` | Currently logged-in user |
+| `apex_bookings` | Submitted test-drive bookings |
+
+⚠️ **Not production auth.** Passwords are stored in plain text in `localStorage` purely for demo/prototype purposes. Do not reuse this pattern for a real login system.
+
+---
+
+## ▶️ Running the Project
+
+**Option 1 — Just open it**
+Double-click `index.html`. Everything works, since it's a static file.
+
+**Option 2 — Local server (recommended)**
+Some browsers restrict certain features (like `localStorage`) when opening files directly via `file://`. Serving it locally avoids any edge cases:
+
+```bash
+# Python 3
+python3 -m http.server 8000
+# then open http://localhost:8000
+
+# or Node.js
+npx serve .
+```
+
+---
+
+## 🎨 Design System
+
+| Token | Value | Use |
+|---|---|---|
+| `--bg` | `#14171c` | Page background (asphalt black) |
+| `--amber` | `#ffb020` | Primary accent (headlight amber) |
+| `--red` | `#e6503f` | Secondary accent / destructive actions (tail-light red) |
+| `--chrome` | `#c8cdd6` | Metallic detail text |
+| Display font | **Rajdhani** | Headings, nav, buttons — motorsport/technical feel |
+| Body font | **Inter** | Paragraphs, labels |
+| Mono font | **JetBrains Mono** | Prices, specs, stats — "dashboard readout" feel |
+
+Light mode is available via the theme toggle (🌙 / ☀️ icon in the nav) and swaps the same token set to a warm off-white palette.
+
+---
+
+## 🛠 Customization Guide
+
+- **Add a car** → add an object to the `CARS` array.
+- **Change brand name / copy** → edit the `<header>`, hero, and footer text directly in the HTML.
+- **Adjust price range slider bounds** → edit `min` / `max` on `#priceRange` in the HTML and its label logic in `applyFilters()`.
+- **Change showroom contact info** → edit the `.info-panel` blocks on the Contact and Book a Test Drive pages, and the footer.
+- **Swap fonts/colors** → edit the CSS custom properties in `:root` and `[data-theme="light"]`.
+
+---
+
+## ♿ Accessibility & Performance
+
+- Semantic HTML (`<header>`, `<nav>`, `<footer>`, `<section>`, proper form labels)
+- Visible keyboard focus states (`:focus-visible`)
+- `aria-label`s on icon-only buttons
+- Single HTTP request for markup/styles/scripts (fonts and images load separately)
+- No external JS frameworks or libraries — minimal payload
+
+---
+
+## 📄 License / Disclaimer
+
+This is a demo/portfolio project. Car listings, prices, and showroom contact details are illustrative, not real inventory. Feel free to fork, modify, and reuse for learning or portfolio purposes.
